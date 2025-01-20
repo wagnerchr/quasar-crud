@@ -62,7 +62,6 @@ import axios, { AxiosError } from 'axios';
 import { Notify } from 'quasar';
 import { format } from 'date-fns';
 
-
 interface User {
   id: number;
   name: string;
@@ -89,9 +88,11 @@ export default defineComponent({
       { name: 'actions', label: 'Ações', align: 'center' as const, field: (row: User) => row, sortable: false },
     ]);
 
+    const apiUrl = process.env.VUE_APP_API_URL;
+    
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${process.env.VUE_APP_API_URL}/users`);
+        const response = await axios.get(`${apiUrl}/users`);
         users.value = response.data;
       } catch (error) {
         console.error('Erro ao buscar usuários:', error);
@@ -118,9 +119,9 @@ export default defineComponent({
     const saveUser = async () => {
     try {
       if (isEdit.value) {
-        await axios.put(`${process.env.VUE_APP_API_URL}/users${form.value.id}`, form.value);
+        await axios.put(`${apiUrl}/users${form.value.id}`, form.value);
       } else {
-        await axios.post(`${process.env.VUE_APP_API_URL}/users`, form.value);
+        await axios.post(`${apiUrl}/users`, form.value);
       }
 
       await fetchUsers();
@@ -173,7 +174,7 @@ export default defineComponent({
 
     const destroyUser = async (id: number) => {
       try {
-        await axios.delete(`${process.env.VUE_APP_API_URL}/users/${id}`);
+        await axios.delete(`${apiUrl}/users/${id}`);
         await fetchUsers();
         Notify.create({
           type: 'positive',
