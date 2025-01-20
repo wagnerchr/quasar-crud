@@ -119,7 +119,7 @@ export default defineComponent({
     const saveUser = async () => {
     try {
       if (isEdit.value) {
-        await axios.put(`${apiUrl}/users${form.value.id}`, form.value);
+        await axios.put(`${apiUrl}/users/${form.value.id}`, form.value);
       } else {
         await axios.post(`${apiUrl}/users`, form.value);
       }
