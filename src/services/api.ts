@@ -7,7 +7,7 @@ export interface User {
 }
 
 const api = axios.create({
-  baseURL: 'http://localhost:3333',
+  baseURL: process.env.VUE_APP_API_URL,
 })
 
 export const getUsers = async (): Promise<User[]> => {

@@ -81,7 +81,7 @@ export default defineConfig((/* ctx */) => {
     devServer: {
       proxy: {
         '/api': {
-          target: 'http://localhost:3333',
+          target: process.env.VUE_APP_API_URL,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
