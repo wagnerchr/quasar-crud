@@ -1,3 +1,5 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
   <q-layout>
     <q-header>
@@ -56,7 +58,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { Notify } from 'quasar';
 import { format } from 'date-fns';
 
@@ -89,7 +91,7 @@ export default defineComponent({
 
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:3333/users');
+        const response = await axios.get(`${process.env.VUE_APP_API_URL}/users`);
         users.value = response.data;
       } catch (error) {
         console.error('Erro ao buscar usuários:', error);
@@ -114,25 +116,54 @@ export default defineComponent({
     };
 
     const saveUser = async () => {
-      try {
-        if (isEdit.value) {
-          await axios.put(`http://localhost:3333/users/${form.value.id}`, form.value);
-        } else {
-          await axios.post('http://localhost:3333/users', form.value);
-        }
-        await fetchUsers();
-
-        Notify.create({
-          type: 'positive',
-          message: isEdit.value ?  'Usuário editado com sucesso!' : 'Usuário salvo com sucesso!',
-          position: 'top',
-        });
-
-        closeDialog();
-      } catch (error) {
-        console.error('Erro ao salvar usuário:', error);
+    try {
+      if (isEdit.value) {
+        await axios.put(`${process.env.VUE_APP_API_URL}/users${form.value.id}`, form.value);
+      } else {
+        await axios.post(`${process.env.VUE_APP_API_URL}/users`, form.value);
       }
-    };
+
+      await fetchUsers();
+
+      Notify.create({
+        type: 'positive',
+        message: isEdit.value ? 'Usuário editado com sucesso!' : 'Usuário salvo com sucesso!',
+        position: 'top',
+      });
+
+      closeDialog();
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {  
+        if (error.response && error.response.data && error.response.data.errors) {
+          const errorMessages = error.response.data.errors
+            .map((err: { message: string }) => err.message)
+            .join('\n');
+
+          Notify.create({
+            type: 'negative',
+            message: errorMessages,
+            position: 'top',
+            color: 'red',
+          });
+        } else {
+          Notify.create({
+            type: 'negative',
+            message: 'Erro inesperado ao salvar o usuário.',
+            position: 'top',
+            color: 'red',
+          });
+        }
+      } else {
+        console.error('Erro não identificado:', error);
+        Notify.create({
+          type: 'negative',
+          message: 'Erro desconhecido. Verifique o console para mais detalhes.',
+          position: 'top',
+          color: 'red',
+        });
+      }
+    }
+};
 
     const editUser = (user: User) => {
       isEdit.value = true;
@@ -142,17 +173,23 @@ export default defineComponent({
 
     const destroyUser = async (id: number) => {
       try {
-        await axios.delete(`http://localhost:3333/users/${id}`);
+        await axios.delete(`${process.env.VUE_APP_API_URL}/users/${id}`);
         await fetchUsers();
         Notify.create({
           type: 'positive',
           message: 'Usuário deletado com sucesso!',
           position: 'top',
-          color: 'red',
+          color: 'green',
         });
 
       } catch (error) {
         console.error('Erro ao deletar usuário:', error);
+        Notify.create({
+          type: 'negative',
+          message: 'Ocorreu um erro ao deletar o usuário!',
+          position: 'top',
+          color: 'red',
+        });
       }
     };
 
