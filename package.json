@@ -9,6 +9,7 @@
   "scripts": {
     "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{ts,js,cjs,mjs,vue}\"",
     "test": "echo \"No test specified\" && exit 0",
+    "start": "quasar serve",
     "dev": "quasar dev",
     "build": "quasar build",
     "postinstall": "quasar prepare"
