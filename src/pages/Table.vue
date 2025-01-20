@@ -88,7 +88,7 @@ export default defineComponent({
       { name: 'actions', label: 'Ações', align: 'center' as const, field: (row: User) => row, sortable: false },
     ]);
 
-    const apiUrl = process.env.VUE_APP_API_URL;
+    const apiUrl = 'https://adonis-crud.onrender.com';
     
     const fetchUsers = async () => {
       try {
