@@ -1,14 +1,16 @@
 import type { RouteRecordRaw } from 'vue-router';
+import TablePage from 'src/pages/Table.vue';
+
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    component: TablePage,
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
+  {
+    path: '/users',
+    component: TablePage,
+  },
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),
