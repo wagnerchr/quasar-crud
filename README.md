@@ -1,3 +1,7 @@
+![image](https://github.com/user-attachments/assets/cac78c81-bc21-41d7-9244-11403c6fec0c)
+
+
+
 # Quasar App (quasar-crud)
 
 A Quasar Project
